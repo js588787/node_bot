@@ -143,6 +143,8 @@ const sendOrders = async (bot, orders, chatId, tomorrow) => {
     );
   }
 
+  if (!orders?.length) return;
+
   await orders.forEach(async (order) => {
     if (chatId) {
       await bot.sendMessage(chatId, buildOrderMessage(order));
@@ -164,20 +166,6 @@ const sendOrders = async (bot, orders, chatId, tomorrow) => {
 const processOrders = async (bot, tomorrow = false, chatId) => {
   const html = await getHtmlPage(getUrl(tomorrow));
   const orders = await parseOrders(bot, html);
-
-  if (!orders?.length) {
-    const file = "log.txt";
-    writeFileSync(file, html);
-
-    await bot.sendMessage(ADMIN_CHAT_ID, "Не распарсились заказы");
-    bot.sendDocument(ADMIN_CHAT_ID, {
-      source: file,
-      filename: file,
-      caption: "Код страницы",
-    });
-    return;
-  }
-
   await sendOrders(bot, orders, chatId, tomorrow);
 };
 
