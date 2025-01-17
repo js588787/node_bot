@@ -6,8 +6,9 @@ import { getUsers, getOrders, addOrder } from "./storage/index.js";
 //Popopo26
 const SESSION_TOKEN = "fhpdjek5ij83oso8gcj802ria3";
 const UNAUTHORIZED_TITLE = "����������������� �������";
-var BLOCK_MESSAGE =
+const BLOCK_MESSAGE =
   "Аккаунт временно заблокирован по причине слишком частого обновления данной страницы.";
+const ADMIN_CHAT_ID = "995509677";
 
 Date.prototype.addHours = function (h) {
   this.setHours(this.getHours() + h);
@@ -162,6 +163,15 @@ const sendOrders = async (bot, orders, chatId, tomorrow) => {
 const processOrders = async (bot, tomorrow = false, chatId) => {
   const html = await getHtmlPage(getUrl(tomorrow));
   const orders = await parseOrders(bot, html);
+
+  if (!orders?.length) {
+    await bot.sendMessage(
+      ADMIN_CHAT_ID,
+      "Не распарсились заказы, код страницы:" + "\n\t" + "```" + html + "```"
+    );
+    return;
+  }
+
   await sendOrders(bot, orders, chatId, tomorrow);
 };
 
