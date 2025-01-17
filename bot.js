@@ -2,7 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { checkUserId, addUser } from "./modules/storage/index.js";
 import { processOrders, sleep } from "./modules/scraper.js";
 
-const API_KEY_BOT = "7054543617:AAEGkIFq6mR2691o1m4Zi3eAMzPxYTHtAOQ";
+const API_KEY_BOT = "6969325302:AAFuBe6_NrnPQt1tIl2fb1m6qrwFysf2N8Q";
 const BOT_SECRET = "8d43b17d-0e0d-406f-b10c-9bdb473944d2";
 const INTERVAL_TIME = 6000;
 
