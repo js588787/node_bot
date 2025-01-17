@@ -75,6 +75,8 @@ const getHtmlPage = async (url) => {
 };
 
 const parseOrders = async (bot, html) => {
+  if (!html) return;
+
   if (html.indexOf(UNAUTHORIZED_TITLE) !== -1) {
     sendMessageForAll(
       bot,
