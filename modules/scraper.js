@@ -1,6 +1,7 @@
 import unirest from "unirest";
 import * as cheerio from "cheerio";
 import { getUsers, getOrders, addOrder } from "./storage/index.js";
+import { writeFileSync } from "fs";
 
 //12870856
 //Popopo26
@@ -165,10 +166,15 @@ const processOrders = async (bot, tomorrow = false, chatId) => {
   const orders = await parseOrders(bot, html);
 
   if (!orders?.length) {
-    await bot.sendMessage(
-      ADMIN_CHAT_ID,
-      "Не распарсились заказы, код страницы:" + "\n\t" + "```" + html + "```"
-    );
+    const file = "log.txt";
+    writeFileSync(file, html);
+
+    await bot.sendMessage(ADMIN_CHAT_ID, "Не распарсились заказы");
+    bot.sendDocument(ADMIN_CHAT_ID, {
+      source: file,
+      filename: file,
+      caption: "Код страницы",
+    });
     return;
   }
 
