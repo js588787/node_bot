@@ -1,7 +1,6 @@
 import unirest from "unirest";
 import * as cheerio from "cheerio";
 import { getUsers, getOrders, addOrder } from "./storage/index.js";
-import { writeFileSync } from "fs";
 
 //12870856
 //Popopo26
@@ -56,6 +55,9 @@ const getHtmlPage = async (url) => {
     // .header("Accept-Encoding", "gzip, deflate")
     // .header("Accept-Language", "ru-RU,ru;q=0.9")
     .header("Cache-Control", "max-age=0")
+    .header("Cache-Control", "no-cache, no-store, must-revalidate")
+    .header("Pragma", "no-cache")
+    .header("Expires", "0")
     // .header("Connection", "keep-alive")
     .header(
       "Cookie",
