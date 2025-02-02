@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { getUsers, getOrders, addOrder } from "./storage/index.js";
 
 //12870856
-//Popopo26
+//Plplpl26
 const SESSION_TOKEN = "fhpdjek5ij83oso8gcj802ria3";
 const UNAUTHORIZED_TITLE = "����������������� �������";
 const BLOCK_MESSAGE =
@@ -29,19 +29,22 @@ const sendMessageForAll = async (bot, message) => {
 };
 
 const getUrl = (tomorrow) => {
-  const date = new Date().addHours(3);
+  const url = "http://business.netboosters.ru/sched.php";
 
   if (tomorrow) {
+    const date = new Date().addHours(3);
     date.addHours(24);
+
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    return `${url}?date=${day}-${month}-${year}+${hours}%3A${minutes}`;
+  } else {
+    return `${url}?limits=1`;
   }
-
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear();
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-
-  return `http://business.netboosters.ru/sched.php?date=${day}-${month}-${year}+${hours}%3A${minutes}`;
 };
 
 const getHtmlPage = async (url) => {
@@ -78,7 +81,7 @@ const getHtmlPage = async (url) => {
   return response.body;
 };
 
-const parseOrders = async (bot, html) => {
+const parseOrders = async (bot, html, tomorrow) => {
   if (!html) return;
 
   if (html.indexOf(UNAUTHORIZED_TITLE) !== -1) {
@@ -100,7 +103,7 @@ const parseOrders = async (bot, html) => {
 
   const $ = cheerio.load(html);
   const orders = [];
-  const table = $("table").eq(1);
+  const table = $("table").eq(tomorrow ? 1 : 2);
 
   table.find("tr").each((index, element) => {
     if (index <= 1) return;
@@ -167,7 +170,7 @@ const sendOrders = async (bot, orders, chatId, tomorrow) => {
 
 const processOrders = async (bot, tomorrow = false, chatId) => {
   const html = await getHtmlPage(getUrl(tomorrow));
-  const orders = await parseOrders(bot, html);
+  const orders = await parseOrders(bot, html, tomorrow);
   await sendOrders(bot, orders, chatId, tomorrow);
 };
 
